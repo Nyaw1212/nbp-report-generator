@@ -46,17 +46,22 @@ The deploying Google account must be able to read the Sheet and template and cre
 
 ## Create the independent Apps Script project
 
-Install and authenticate `clasp`, then run from this repository:
+Install and authenticate the current `clasp`, enable the Google Apps Script API
+at <https://script.google.com/home/usersettings>, then run from a fresh checkout
+of this repository:
 
 ```powershell
 npm install -g @google/clasp
 clasp login
-clasp create "NBP Report Generator" --type webapp
-clasp push
+clasp create-script --title "NBP Report Generator" --type webapp
+git restore .
+clasp push --force
 clasp open-script
 ```
 
 Keep the generated `.clasp.json` local. It is excluded from Git because it identifies the separate Apps Script project.
+The `git restore .` step restores this repository's validated manifest and source
+files if project creation writes starter files; it does not remove `.clasp.json`.
 
 In the Apps Script editor:
 
