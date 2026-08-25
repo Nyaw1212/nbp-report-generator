@@ -62,7 +62,7 @@ function populateTable1_(body, rows) {
     var row = index === 0
       ? anchorRow
       : table.insertTableRow(anchorIndex + index, rowPrototype.copy());
-    setOfficeScheduleRow_(row, rowData);
+    setOfficeCountRow_(row, rowData);
   });
 
   var totalIndex = findRowIndexByFirstCell_(table, 'TOTAL');
@@ -90,12 +90,19 @@ function findRowIndexByFirstCell_(table, expectedText) {
   return -1;
 }
 
-function setOfficeScheduleRow_(row, rowData) {
-  var values = [rowData.office, rowData.regular, rowData.a, rowData.b, rowData.c];
-  if (row.getNumCells() < values.length) throw new Error('The Table 1 office row does not have five cells.');
-  values.forEach(function(value, index) {
-    setCellTextPreservingStyle_(row.getCell(index), value || '—');
-  });
+function setOfficeCountRow_(row, rowData) {
+  if (row.getNumCells() < 5) throw new Error('The Table 1 office row does not have five cells.');
+
+  setTableBodyCellText_(row.getCell(0), rowData.office);
+  for (var index = 1; index < 5; index += 1) {
+    setTableBodyCellText_(row.getCell(index), '');
+  }
+}
+
+function setTableBodyCellText_(cell, value) {
+  setCellTextPreservingStyle_(cell, value);
+  var text = cell.editAsText();
+  if (text.getText().length) text.setBold(false);
 }
 
 function clearCellsAfterFirst_(row) {
