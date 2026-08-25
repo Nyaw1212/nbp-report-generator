@@ -46,8 +46,7 @@ function createPage1Report_(request) {
 function populateTable1_(body, rows) {
   var table = findTable1_(body);
   var headerRow = table.getRow(0);
-  var headerLabels = ['OFFICE / UNIT', 'REGULAR', 'A', 'B', 'C'];
-  headerLabels.forEach(function(label, index) {
+  REPORT_TABLE1_HEADERS_.forEach(function(label, index) {
     setCellTextPreservingStyle_(headerRow.getCell(index), label);
   });
 
