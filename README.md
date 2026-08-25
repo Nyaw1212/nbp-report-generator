@@ -11,7 +11,7 @@ This pilot:
 - copies the native Google Docs master template
 - replaces the camp and report-date placeholders
 - expands `{{ROWS}}` into one row per active office
-- writes each office's configured shift labels into the generated Table 1
+- leaves the `REGULAR`, `A`, `B`, and `C` cells blank for personnel counts
 - saves both a Google Doc and PDF in a report-output folder
 - performs no Neon reads or writes
 - makes no changes to the existing Attendance Center project
@@ -28,7 +28,7 @@ The source Google Doc must contain:
 - a Table 1 whose first header cell is `{{OFFICE}}`
 - a reusable body row whose first cell is `{{ROWS}}`
 
-The generator replaces the Table 1 headers with `OFFICE / UNIT | REGULAR | A | B | C`, clones the anchor row, and preserves the template's row formatting.
+The generator replaces the Table 1 headers with `OFFICE / UNIT | REGULAR | A | B | C`, clones the anchor row, writes office names in normal-weight text, and leaves the four shift-count cells blank. Shift-directory schedules are configuration inputs and are not printed inside these cells.
 
 ## Configuration
 
