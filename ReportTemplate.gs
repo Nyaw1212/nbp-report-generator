@@ -107,10 +107,35 @@ function clearCellsAfterFirst_(row) {
 function setCellTextPreservingStyle_(cell, value) {
   var text = cell.editAsText();
   var oldText = text.getText();
-  var attributes = oldText.length ? text.getAttributes(0) : null;
+  var style = oldText.length ? readSafeTextStyle_(text) : null;
   var nextText = String(value == null ? '' : value);
   text.setText(nextText);
-  if (attributes && nextText.length) text.setAttributes(0, nextText.length - 1, attributes);
+  if (style && nextText.length) applySafeTextStyle_(text, style);
+}
+
+function readSafeTextStyle_(text) {
+  return {
+    bold: text.isBold(0),
+    italic: text.isItalic(0),
+    underline: text.isUnderline(0),
+    fontFamily: text.getFontFamily(0),
+    fontSize: text.getFontSize(0),
+    foregroundColor: text.getForegroundColor(0)
+  };
+}
+
+function applySafeTextStyle_(text, style) {
+  if (typeof style.bold === 'boolean') text.setBold(style.bold);
+  if (typeof style.italic === 'boolean') text.setItalic(style.italic);
+  if (typeof style.underline === 'boolean') text.setUnderline(style.underline);
+  if (style.fontFamily) text.setFontFamily(style.fontFamily);
+  if (typeof style.fontSize === 'number' && style.fontSize > 0) text.setFontSize(style.fontSize);
+
+  // Google Docs can return null or theme-derived color values that cannot be
+  // passed back to setAttributes(). Only restore a concrete RGB hex color.
+  if (/^#[0-9a-f]{6}$/i.test(String(style.foregroundColor || ''))) {
+    text.setForegroundColor(style.foregroundColor);
+  }
 }
 
 function replaceToken_(body, token, replacement) {
