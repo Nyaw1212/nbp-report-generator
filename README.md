@@ -64,7 +64,7 @@ In the Apps Script editor:
 2. Select **Web app**.
 3. Execute as yourself.
 4. Choose the access scope appropriate for your organization.
-5. Authorize the requested Docs, Drive, and read-only Sheets permissions.
+5. Authorize the requested Docs, Drive, and Sheets permissions. The generator's code path only reads the directory spreadsheet; Apps Script requires the standard Sheets scope for `SpreadsheetApp.openById()`.
 6. Open the deployment URL and generate a Minimum Security Camp test report.
 
 ## Validation
