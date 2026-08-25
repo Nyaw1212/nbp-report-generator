@@ -1,0 +1,89 @@
+(function() {
+  var form = document.getElementById('report-form');
+  var campSelect = document.getElementById('camp');
+  var dateInput = document.getElementById('report-date');
+  var generateButton = document.getElementById('generate');
+  var status = document.getElementById('status');
+  var result = document.getElementById('result');
+  var documentLink = document.getElementById('document-link');
+  var pdfLink = document.getElementById('pdf-link');
+  var summary = document.getElementById('summary');
+  var warnings = document.getElementById('warnings');
+
+  function setStatus(message, isError) {
+    status.textContent = message || '';
+    status.classList.toggle('error', Boolean(isError));
+  }
+
+  function loadBootstrap() {
+    setStatus('Loading office and shift directories…', false);
+    google.script.run
+      .withSuccessHandler(renderBootstrap)
+      .withFailureHandler(showFailure)
+      .getBootstrapData();
+  }
+
+  function renderBootstrap(data) {
+    campSelect.innerHTML = '';
+    var configuredCamps = (data.camps || []).filter(function(camp) { return camp.configured; });
+
+    (data.camps || []).forEach(function(camp) {
+      var option = document.createElement('option');
+      option.value = camp.code;
+      option.textContent = camp.name + (camp.configured ? '' : ' — configure shifts first');
+      option.disabled = !camp.configured;
+      campSelect.appendChild(option);
+    });
+
+    var requestedCamp = String(window.REPORT_INITIAL.camp || '').toUpperCase();
+    var selected = configuredCamps.find(function(camp) { return camp.code === requestedCamp; }) || configuredCamps[0];
+    if (selected) campSelect.value = selected.code;
+
+    dateInput.value = window.REPORT_INITIAL.date || data.defaultDate;
+    campSelect.disabled = !selected;
+    generateButton.disabled = !selected;
+    setStatus(selected ? '' : 'No camp has active shift configuration yet.', !selected);
+  }
+
+  function showFailure(error) {
+    generateButton.disabled = false;
+    campSelect.disabled = false;
+    setStatus(error && error.message ? error.message : String(error || 'Unable to generate report.'), true);
+  }
+
+  function renderResult(data) {
+    generateButton.disabled = false;
+    campSelect.disabled = false;
+    setStatus('', false);
+
+    documentLink.href = data.documentUrl;
+    pdfLink.href = data.pdfUrl;
+    summary.textContent = data.officeCount + ' office rows generated for ' + data.camp + ' on ' + data.reportDate + '.';
+    warnings.innerHTML = '';
+    (data.warnings || []).forEach(function(message) {
+      var item = document.createElement('li');
+      item.textContent = message;
+      warnings.appendChild(item);
+    });
+    result.hidden = false;
+  }
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    result.hidden = true;
+    generateButton.disabled = true;
+    campSelect.disabled = true;
+    setStatus('Copying the template and building Table 1…', false);
+
+    google.script.run
+      .withSuccessHandler(renderResult)
+      .withFailureHandler(showFailure)
+      .generateReport({
+        camp: campSelect.value,
+        reportDate: dateInput.value
+      });
+  });
+
+  loadBootstrap();
+})();
+
