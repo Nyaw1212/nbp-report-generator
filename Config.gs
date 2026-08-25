@@ -11,6 +11,7 @@ var REPORT_SHEETS_ = Object.freeze({
 });
 
 var REPORT_SHIFT_CODES_ = Object.freeze(['REGULAR', 'A', 'B', 'C']);
+var REPORT_TABLE1_HEADERS_ = Object.freeze(['OFFICE / UNIT', '8-5', '11-7', '7-3', '3-11']);
 
 var CAMP_DISPLAY_NAMES_ = Object.freeze({
   MAXIMUM: 'MAXIMUM SECURITY CAMP',
