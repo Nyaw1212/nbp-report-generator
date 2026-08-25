@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?!= include_('Styles'); ?>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="card">
+        <p class="eyebrow">NBP ATTENDANCE CENTER</p>
+        <h1>Report Generator</h1>
+        <p class="intro">Generate a Page 1 test report from the active office and shift directories.</p>
+
+        <form id="report-form">
+          <label for="camp">Camp</label>
+          <select id="camp" required disabled>
+            <option value="">Loading camps…</option>
+          </select>
+
+          <label for="report-date">Report date</label>
+          <input id="report-date" type="date" required>
+
+          <button id="generate" type="submit" disabled>Generate test report</button>
+        </form>
+
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <section id="result" class="result" hidden>
+          <h2>Report generated</h2>
+          <p id="summary"></p>
+          <div class="actions">
+            <a id="document-link" class="button secondary" target="_blank" rel="noopener">Open Google Doc</a>
+            <a id="pdf-link" class="button secondary" target="_blank" rel="noopener">Open PDF</a>
+          </div>
+          <ul id="warnings" class="warnings"></ul>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      window.REPORT_INITIAL = {
+        camp: <?!= JSON.stringify(initialCamp) ?>,
+        date: <?!= JSON.stringify(initialDate) ?>
+      };
+    </script>
+    <script><?!= include_('AppJs'); ?></script>
+  </body>
+</html>
+
