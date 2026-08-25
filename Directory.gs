@@ -95,13 +95,7 @@ function getCampTable1Rows_(camp) {
       labels[code] = officeShifts[code] ? officeShifts[code].displayLabel : '';
       if (!labels[code]) warnings.push(office.office + ' is missing active schedule ' + code + '.');
     });
-    return {
-      office: office.office,
-      regular: labels.REGULAR,
-      a: labels.A,
-      b: labels.B,
-      c: labels.C
-    };
+    return { office: office.office };
   });
 
   if (!model.shifts.some(function(shift) { return shift.camp === normalizedCamp; })) {
